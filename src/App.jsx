@@ -1,3 +1,21 @@
+import {
+  CircleHelp,
+  Gauge,
+  ShieldCheck,
+  ArrowUpCircle,
+  TrendingUp,
+  FileText,
+  ChartNoAxesCombined,
+  Brain,
+  ListChecks,
+  Lightbulb,
+  FileCheck2,
+  ClipboardCheck,
+  Tags,
+  Info,
+  Upload,
+  CircleCheck,
+} from "lucide-react";
 import { useState, useEffect } from "react";
 import constants, {
   buildPresenceChecklist,
@@ -55,39 +73,39 @@ function App() {
     }
   };
 
-const analyzeResume = async (text) => {
-  const prompt = constants.ANALYZE_RESUME_PROMPT.replace(
-    "{{DOCUMENT_TEXT}}",
-    text
-  );
+  const analyzeResume = async (text) => {
+    const prompt = constants.ANALYZE_RESUME_PROMPT.replace(
+      "{{DOCUMENT_TEXT}}",
+      text
+    );
 
-  const response = await fetch("/api/analyze-resume", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      text,
-      prompt,
-    }),
-  });
+    const response = await fetch("/api/analyze-resume", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        text,
+        prompt,
+      }),
+    });
 
-  const data = await response.json();
+    const data = await response.json();
 
-  if (!response.ok) {
-    throw new Error(data.error || "AI analysis failed.");
-  }
+    if (!response.ok) {
+      throw new Error(data.error || "AI analysis failed.");
+    }
 
-  const content = data.reply;
+    const content = data.reply;
 
-  const result = parseJSONResponse(content);
+    const result = parseJSONResponse(content);
 
-  if (result.error) {
-    throw new Error(result.error);
-  }
+    if (result.error) {
+      throw new Error(result.error);
+    }
 
-  return result;
-};
+    return result;
+  };
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
@@ -201,7 +219,11 @@ const analyzeResume = async (text) => {
                     className="icon-container-xl bg-gradient-to-br
                 from-blue-500/20 to-cyan-500/20 border-blue-500/30"
                   >
-                    <span className="text-3xl"></span>
+                    <CircleCheck
+                      className="text-green-400"
+                      size={30}
+                      strokeWidth={2}
+                    />
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-green-500 mb-1">
@@ -222,8 +244,15 @@ const analyzeResume = async (text) => {
 
             <div className="score-card">
               <div className="text-center mb-6">
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <span className="text-2xl"></span>
+                <div className="flex items-center justify-center gap-3 mb-3">
+                  <div className="icon-container bg-cyan-500/20">
+                    <Gauge
+                      className="text-cyan-400"
+                      size={22}
+                      strokeWidth={2}
+                    />
+                  </div>
+
                   <h2 className="text-2xl sm:text-3xl font-bold text-white">
                     Overall Score
                   </h2>
@@ -284,7 +313,7 @@ const analyzeResume = async (text) => {
                   className="bg-green-500/20 icon-container-lg mx-auto mb-3
               group-hover:bg-green-400/30 transition-colors"
                 >
-                  <span className="text-green-300 text-xl"></span>
+                  <ShieldCheck className="text-green-300" size={22} />
                 </div>
                 <h4
                   className="text-green-300 text-sm font-semibold uppercase tracking-
@@ -308,7 +337,7 @@ const analyzeResume = async (text) => {
                   className="bg-orange-500/20 icon-container-lg mx-auto mb-3
               group-hover:bg-orange-400/30 transition-colors"
                 >
-                  <span className="text-orange-300 text-xl"></span>
+                  <ArrowUpCircle className="text-orange-300" size={22} />
                 </div>
                 <h4
                   className="text-orange-300 text-sm font-semibold uppercase tracking-
@@ -331,20 +360,23 @@ const analyzeResume = async (text) => {
             </div>
 
             <div className="section-card group">
-              <div className="flex items-center gap-3 mb-4">
+              <div className="flex items-center gap-3 mb-6">
                 <div className="icon-container bg-purple-500/20">
-                  <span className="text-purple-300 text-lg"></span>
+                  <FileText
+                    className="text-purple-300"
+                    size={22}
+                    strokeWidth={2}
+                  />
                 </div>
+
                 <h4 className="text-xl font-bold text-white">
                   Executive Summary
                 </h4>
               </div>
+
               <div>
                 <div className="summary-box">
-                  <p
-                    className="text-slate-200 text-sm sm:text-base leading-
-                  relaxed"
-                  >
+                  <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
                     {analysis.summary}
                   </p>
                 </div>
@@ -352,36 +384,44 @@ const analyzeResume = async (text) => {
             </div>
 
             <div className="section-card group">
-              <div className="flex items-center gp-3 mb-6">
-                <div className="icon-container bg-cyan-500/20"></div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="icon-container bg-cyan-500/20">
+                  <ChartNoAxesCombined
+                    className="text-cyan-400"
+                    size={22}
+                    strokeWidth={2}
+                  />
+                </div>
+
                 <h4 className="text-xl font-bold text-white">
-                   Performance Metrics
+                  Performance Metrics
                 </h4>
               </div>
-              
 
               <div className="space-y-4">
                 {METRIC_CONFIG.map((cfg, i) => {
                   const value =
                     analysis.performanceMetrics?.[cfg.key] ?? cfg.defaultValue;
+
                   return (
                     <div key={i} className="group/item">
                       <div className="flex items-center justify-between mb-2">
                         <div className="flex items-center gap-2">
                           <span className="text-lg">{cfg.icon}</span>
+
                           <p className="text-slate-200 font-medium">
                             {cfg.label}
                           </p>
                         </div>
+
                         <span className="text-slate-300 font-bold">
                           {value}/10
                         </span>
                       </div>
+
                       <div className="progress-bar-small">
                         <div
-                          className={`h-full bg-gradient-to-r
-                        ${cfg.colorClass}rounded-full transition-all
-                        duration-1000 ease-out group-hover/item:shado-lg ${cfg.shadowClass}`}
+                          className={`h-full bg-gradient-to-r ${cfg.colorClass} rounded-full transition-all duration-1000 ease-out ${cfg.shadowClass}`}
                           style={{ width: `${(value / 10) * 100}%` }}
                         ></div>
                       </div>
@@ -393,16 +433,26 @@ const analyzeResume = async (text) => {
             <div className="section-card group">
               <div className="flex items-center gap-3 mb-6">
                 <div className="icon-container bg-purple-500/20">
-                  <span className="text-lg text-purple-300"></span>
+                  <Brain
+                    className="text-purple-300"
+                    size={22}
+                    strokeWidth={2}
+                  />
                 </div>
+
                 <h2 className="text-xl font-bold text-purple-400">
                   Resume Insights
                 </h2>
               </div>
+
               <div className="grid gap-4">
                 <div className="info-box-cyan group/item">
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-lg text-cyan-400"></span>
+                    <ListChecks
+                      className="text-cyan-400"
+                      size={20}
+                      strokeWidth={2}
+                    />
                     <h3 className="text-cyan-300 font-semibold">
                       Action Items
                     </h3>
@@ -424,7 +474,7 @@ const analyzeResume = async (text) => {
                 </div>
                 <div className="info-box-emerald group/item">
                   <div className="flex items-center gap-3 mb-2">
-                    <span className="text-lg"></span>
+                    <Lightbulb className="text-emerald-400" size={20} />
                     <h3 className="text-emerald-300 font-semibold">Pro Tips</h3>
                   </div>
                   <div className="space-y-2">
@@ -448,36 +498,46 @@ const analyzeResume = async (text) => {
             <div className="section-card group">
               <div className="flex items-center gap-3 mb-6">
                 <div className="icon-container bg-violet-500/20">
-                  <span className="text-lg"></span>
+                  <FileCheck2
+                    className="text-violet-400"
+                    size={22}
+                    strokeWidth={2}
+                  />
                 </div>
+
                 <h2 className="text-violet-300 font-bold text-xl">
                   ATS Optimization
                 </h2>
               </div>
 
               <div className="info-box-violet mb-4">
-                <div className="flex items-start gap-3 mb-3">
-                  <div>
-                    <h3 className="text-violet-300 font-semibold mb-2">
-                      What is ATS?
-                    </h3>
-                    <p className="text-slate-200 text-small leading-relaxed">
-                      <strong className="text-violet-300">
-                        Applicant Tracking Systems (ATS)
-                      </strong>{" "}
-                      are software tools used by 75%+ of employers to
-                      automatically screen resumes before human review. These
-                      systems scan for keywords, proper formatting, and relevant
-                      qualifications to rank candidates. If your resume isn't
-                      ATS-friendly, it may never reach a human recruiter.
-                    </p>
-                  </div>
+                <div className="flex items-center gap-2 mb-3">
+                  <CircleHelp
+                    className="text-violet-300 flex-shrink-0"
+                    size={20}
+                    strokeWidth={2}
+                  />
+
+                  <h3 className="text-violet-300 font-semibold">
+                    What is ATS?
+                  </h3>
                 </div>
+
+                <p className="text-slate-200 text-small leading-relaxed">
+                  <strong className="text-violet-300">
+                    Applicant Tracking Systems (ATS)
+                  </strong>{" "}
+                  are software tools used by 75%+ of employers to automatically
+                  screen resumes before human review. These systems scan for
+                  keywords, proper formatting, and relevant qualifications to
+                  rank candidates. If your resume isn't ATS-friendly, it may
+                  never reach a human recruiter.
+                </p>
               </div>
 
               <div className="info-box-violet">
                 <div className="flex items-center gap-3 mb-3">
-                  <span className="text-violet-400 text-lg"></span>
+                  <ClipboardCheck className="text-violet-400" size={20} />
 
                   <h3 className="text-lg text-violet-300 font-semibold">
                     ATS Compatibility Checklist
@@ -505,12 +565,14 @@ const analyzeResume = async (text) => {
             <div className="section-card group">
               <div className="flex items-center gap-3 mb-6">
                 <div className="icon-container bg-blue-500/20">
-                  <span className="text-lg"></span>
+                  <Tags className="text-blue-400" size={22} strokeWidth={2} />
                 </div>
+
                 <h2 className="text-blue-400 font-bold text-xl">
                   Recommended Keywords
                 </h2>
               </div>
+
               <div className="flex flex-wrap gap-3 mb-4">
                 {analysis.keywords.map((k, i) => (
                   <span key={i} className="keyword-tag group/item">

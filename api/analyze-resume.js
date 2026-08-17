@@ -30,13 +30,44 @@ export default async function handler(req, res) {
       });
     }
 
-    const response = await ai.models.generateContent({
-      model: "gemini-3.6-flash",
-      contents: `${prompt}
+    let response;
+    let lastError;
+
+    // Retry Gemini up to 3 times if the service is temporarily unavailable
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        response = await ai.models.generateContent({
+          model: "gemini-3.6-flash",
+          contents: `${prompt}
 
 Resume Text:
 ${text}`,
-    });
+        });
+
+        break;
+      } catch (error) {
+        lastError = error;
+
+        console.log(`Gemini attempt ${attempt} failed.`);
+
+        // Retry only temporary service errors
+        if (error.status !== 503 && error.status !== 429) {
+          throw error;
+        }
+
+        // Don't wait after the final attempt
+        if (attempt < 3) {
+          const delay = attempt * 2000;
+          console.log(`Retrying Gemini in ${delay / 1000} seconds...`);
+
+          await new Promise((resolve) => setTimeout(resolve, delay));
+        }
+      }
+    }
+
+    if (!response) {
+      throw lastError || new Error("Gemini did not return a response.");
+    }
 
     const content = response.text;
 
