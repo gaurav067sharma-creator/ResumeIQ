@@ -1,20 +1,5 @@
 import {
-  CircleHelp,
-  Gauge,
-  ShieldCheck,
-  ArrowUpCircle,
-  TrendingUp,
-  FileText,
-  ChartNoAxesCombined,
-  Brain,
-  ListChecks,
-  Lightbulb,
-  FileCheck2,
-  ClipboardCheck,
-  Tags,
-  Info,
-  Upload,
-  CircleCheck,
+  CircleHelp,Gauge,ShieldCheck,ArrowUpCircle,FileText,ChartNoAxesCombined,Brain,ListChecks,Lightbulb,FileCheck2,ClipboardCheck,Tags,CircleCheck,
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import constants, {
