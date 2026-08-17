@@ -55,26 +55,39 @@ function App() {
     }
   };
 
-  const analyzeResume = async (text) => {
-    const prompt = constants.ANALYZE_RESUME_PROMPT.replace(
-      "{{DOCUMENT_TEXT}}",
-      text
-    );
-    const response = await window.puter.ai.chat(
-      [
-        { role: "system", content: "You are an expert resume reviewer..." },
-        { role: "user", content: prompt },
-      ],
-      {
-        model: "gpt-4o",
-      }
-    );
-    const result = parseJSONResponse(
-      typeof response === "string" ? response : response.message?.content || ""
-    );
-    if (result.error) throw new Error(result.error);
-    return result;
-  };
+const analyzeResume = async (text) => {
+  const prompt = constants.ANALYZE_RESUME_PROMPT.replace(
+    "{{DOCUMENT_TEXT}}",
+    text
+  );
+
+  const response = await fetch("/api/analyze-resume", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      text,
+      prompt,
+    }),
+  });
+
+  const data = await response.json();
+
+  if (!response.ok) {
+    throw new Error(data.error || "AI analysis failed.");
+  }
+
+  const content = data.reply;
+
+  const result = parseJSONResponse(content);
+
+  if (result.error) {
+    throw new Error(result.error);
+  }
+
+  return result;
+};
 
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
